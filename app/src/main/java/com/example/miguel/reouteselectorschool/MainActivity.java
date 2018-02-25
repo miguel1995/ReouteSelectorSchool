@@ -3,9 +3,14 @@ package com.example.miguel.reouteselectorschool;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.JsonReader;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,13 +27,14 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String valorPrueba = "hola mundos";
+
 
     ArrayList<Bus> buses = new ArrayList<>();
-
     String url = "https://api.myjson.com/bins/10yg1t";
     JSONObject jsonObject;
-
+    RecyclerView listReciclerView;
+    BusesAdapter busesAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
@@ -36,17 +42,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button =  findViewById(R.id.pruebaButton);
+        new AsyncTaskData().execute(url); //se lanza una tarea en segundo plano
 
-        new AsyncTaskData().execute(url);
+        listReciclerView =  (RecyclerView) findViewById(R.id.list_bus_recycler_view);
 
+        listReciclerView.setHasFixedSize(true); //no cambia el tamaño del layout
+        //se agrega un linear layout
+        mLayoutManager = new LinearLayoutManager(this);
+        listReciclerView.setLayoutManager(mLayoutManager);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.println(valorPrueba);
-            }
-        });
     }
 
     public class AsyncTaskData extends AsyncTask<String, String, String[]>{
@@ -70,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     buses.add(createBus(bus));
                 }
 
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -80,7 +86,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String[] strings) {
+
             super.onPostExecute(strings);
+            busesAdapter = new BusesAdapter(buses, getApplicationContext());
+            listReciclerView.setAdapter(busesAdapter);
         }
 
         protected Bus createBus( JSONObject jBus ) throws JSONException, IOException {
@@ -88,21 +97,16 @@ public class MainActivity extends AppCompatActivity {
             JSONObject jsonRoute;
             String stops_url;
 
-            System.out.println("############################################");
-            System.out.println("id: " + jBus.getString("id"));
             newBus.setId(Integer.valueOf(jBus.getString("id")));
-            System.out.println("name: " + jBus.getString("name"));
             newBus.setName(jBus.getString("name"));
-            System.out.println("description: " + jBus.getString("description"));
             newBus.setDescription(jBus.getString("description"));
-            System.out.println("stops_url: " + jBus.getString("stops_url"));
 
             stops_url = jBus.getString("stops_url");
             jsonRoute = JsonAdministrator.readJsonFromUrl(stops_url);
-            newBus.setRoute(createRoute(jsonRoute));
 
-            System.out.println("img_url: " + jBus.getString("img_url"));
-            newBus.setImageUrl(stops_url);
+            newBus.setRoute(createRoute(jsonRoute));
+            newBus.setImageUrl(jBus.getString("img_url"));
+
 
             return newBus;
         }
@@ -122,5 +126,6 @@ public class MainActivity extends AppCompatActivity {
             newRoute.setRetryTimeMilliseconds(Integer.valueOf(jRoute.getString("retry_time_milliseconds")));
             return newRoute;
         }
+
     }
 }

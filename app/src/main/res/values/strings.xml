@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ReouteSelectorSchool</string>
+    <string name="route_string">Ruta No: </string>
 </resources>
