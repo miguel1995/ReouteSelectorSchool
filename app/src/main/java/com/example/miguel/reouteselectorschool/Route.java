@@ -25,8 +25,19 @@ public class Route {
         longitudeOfTheStops.add(longitude);
     }
 
+    public ArrayList<Float> getLatitudeOfTheStops() {
+        return latitudeOfTheStops;
+    }
+
+    public ArrayList<Float> getLongitudeOfTheStops() {
+        return longitudeOfTheStops;
+    }
+
     public int getEstimatedTimeMilliseconds() {
         return estimatedTimeMilliseconds;
+    }
+    public float getEstimatedTimeMinutes() {
+        return (estimatedTimeMilliseconds/1000);
     }
 
     public void setEstimatedTimeMilliseconds(int estimatedTimeMilliseconds) {
@@ -35,6 +46,10 @@ public class Route {
 
     public int getRetryTimeMilliseconds() {
         return retryTimeMilliseconds;
+    }
+
+    public float getRetryTimeMinutes() {
+        return (retryTimeMilliseconds/1000);
     }
 
     public void setRetryTimeMilliseconds(int retryTimeMilliseconds) {

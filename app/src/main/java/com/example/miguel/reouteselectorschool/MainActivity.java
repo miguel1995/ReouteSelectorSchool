@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         //se agrega un linear layout
         mLayoutManager = new LinearLayoutManager(this);
         listReciclerView.setLayoutManager(mLayoutManager);
-
     }
 
     public class AsyncTaskData extends AsyncTask<String, String, String[]>{
@@ -73,9 +72,6 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject bus = busList.getJSONObject(i);
                     buses.add(createBus(bus));
                 }
-
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -86,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String[] strings) {
-
             super.onPostExecute(strings);
             busesAdapter = new BusesAdapter(buses, getApplicationContext());
             listReciclerView.setAdapter(busesAdapter);
